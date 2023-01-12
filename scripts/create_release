@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 # shared global
 new_marketing_version=""
 
@@ -20,7 +22,7 @@ function bump_marketing_version {
     new_marketing_version="${major}.${minor}.${bugfix}"
 
     echo "setting $new_marketing_version in $xcconfig_file"
-    sed -i'.bak' -e "s/^MARKETING_VERSION \= [0-9\.]*$/MARKETING_VERSION = ${new_marketing_version};/" "$xcconfig_file"
+    sed -i'.bak' -e "s/^MARKETING_VERSION \= [0-9\.]*$/MARKETING_VERSION = ${new_marketing_version}/" "$xcconfig_file"
     rm "${xcconfig_file}.bak"
   else
     echo "Could not find $xcconfig_file"
@@ -35,7 +37,11 @@ function create_release_pull_request {
   title="$release_branch into $base_branch"
   pr_body="Merge $release_branch into $base_branch"
   post_body="{\"title\": \"$title\", \"body\": \"$pr_body\", \"head\": \"$release_branch\", \"base\": \"$base_branch\"}"
-  curl -XPOST "${repo_url}/pulls" -d  "$post_body"
+  curl -XPOST "${repo_url}/pulls" \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer $GITHUB_TOKEN"\
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  -d  "$post_body"
 }
 
 function create_release_branch_commit_tag_and_push {
@@ -52,7 +58,7 @@ function create_release_branch_commit_tag_and_push {
 
   git push origin "$new_branch" --tags
 
-  create_release_pull_request "$repo_url" "$new_branch" "main"
+  create_release_pull_request "$repo_url" "$new_branch" "master"
   create_release_pull_request "$repo_url" "$new_branch" "develop"
 }
 
@@ -67,6 +73,11 @@ function show_usage {
 
 ### main
 
+if [[ -z "$GITHUB_TOKEN" ]]; then
+  echo "A GITHUB_TOKEN is required"
+  exit 1
+fi
+
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 if [[ "$current_branch" != "develop" ]]; then
   echo "Auto release creation should only be executed on the develop branch"
@@ -75,4 +86,4 @@ fi
 
 bump_marketing_version "Reveri/Config/Common.xcconfig"
 
-create_release_branch_commit_tag_and_push "$new_marketing_version" "https://github.com/mikelrob/release_test.git" # "https://github.com/reveri-health/reveri-ios"
+create_release_branch_commit_tag_and_push "$new_marketing_version" "https://api.github.com/repos/mikelrob/release_test" # "https://api.github.com/repos/reveri-health/reveri-ios"

@@ -19,7 +19,7 @@ function create_gh_release {
   repo_url="$2"
   post_body="{\"tag_name\":\"$tag_name\",\"name\":\"$tag_name\",\"generate_release_notes\":true}"
   curl -X POST "${repo_url}/releases" \
-   -H "Accept: application/vnd.github+json" \
+  -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $GH_TOKEN"\
   -H "X-GitHub-Api-Version: 2022-11-28" \
   -d "$post_body"
@@ -30,4 +30,4 @@ function create_gh_release {
 
 version=$(get_marketing_version "Reveri/Config/Common.xcconfig")
 
-create_gh_release "$version" "https://github.com/mikelrob/release_test.git" # "https://github.com/reveri-health/reveri-ios"
+create_gh_release "$version" "https://api.github.com/repos/mikelrob/release_test" # "https://api.github.com/repos/reveri-health/reveri-ios"
