@@ -1,0 +1,14 @@
+name: Make a Release
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  make_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Github Release
+        run: scripts/make_gh_release
+        env:
+          GH_TOKEN: { secrets.GITHUB_TOKEN }
