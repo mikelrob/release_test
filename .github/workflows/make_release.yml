@@ -7,11 +7,13 @@ on:
 jobs:
   make_release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Create Github Release
         run: |
           pwd
-          ls -la ${{ github.workspace }}
-          ${{ github.workspace }}/scripts/make_gh_release
+          ls -la ${{ github.workspace }}/..
+          ${{ github.workspace }}/../scripts/make_gh_release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

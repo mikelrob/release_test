@@ -91,3 +91,5 @@ fi
 bump_marketing_version "Reveri/Config/Common.xcconfig"
 
 create_release_branch_commit_tag_and_push "$new_marketing_version" "https://api.github.com/repos/mikelrob/release_test" # "https://api.github.com/repos/reveri-health/reveri-ios"
+
+git checkout develop
