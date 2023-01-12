@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 # shared global
 new_marketing_version=""
 
@@ -62,19 +60,25 @@ function create_release_branch_commit_tag_and_push {
   create_release_pull_request "$repo_url" "$new_branch" "develop"
 }
 
-function show_usage {
-  echo ""
-  echo "create_release "
-  echo ""
-  echo ""
-  echo ""
-  echo ""
-}
-
 ### main
 
 if [[ -z "$GITHUB_TOKEN" ]]; then
   echo "A GITHUB_TOKEN is required"
+  echo
+  echo " Open the web browser to:"
+  echo
+  echo "    https://github.com/settings/personal-access-tokens/new"
+  echo
+  echo "Create a fine-grained personal access token with custom name, desired expiry, repo access to All and Repo Permissions "
+  echo
+  echo "    Contents:         Read and write"
+  echo "    Pull requests:    Read and write (this will enable Metadata too)"
+  echo
+  echo "This should create a token string beginning with:                github_pat_"
+  echo "Add the token to your ~/.zshrc with the name GITHUB_TOKEN"
+  echo
+  echo "    GITHUB_TOKEN=<your github token>"
+  echo
   exit 1
 fi
 
