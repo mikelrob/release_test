@@ -12,6 +12,7 @@ function get_marketing_version {
   else
     echo "Could not find $xcconfig_file"
     exit 10
+  fi
 }
 
 function create_gh_release {
